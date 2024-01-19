@@ -1,5 +1,8 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
-import { Button, FieldError, Form, Input, Label, TextField } from "react-aria-components";
+import { Button} from "~/components/Button";
+import { Form } from "~/components/Form";
+import { TextField } from "~/components/TextField";
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,46 +13,16 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1 className="text-3xl dark:text-white">Welcome to my Remix App</h1>
-      <Form className="flex flex-col gap-6 p-6 max-w-md mx-auto">
-        <TextField name="username" type="text" className="flex flex-col gap-2" isRequired>
-          <Label>Username</Label>
-          <Input />
-          <FieldError />
+    <main className="bg-zinc-50 h-full flex flex-col gap-8">
+      <header className="w-full h-16 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 shadow" />
+      <h1 className="text-2xl font-semibold text-center dark:text-white pt-8">Log in</h1>
+      <Form className="flex flex-col gap-6 p-10 mx-auto min-w-72 md:min-w-[28rem] bg-white shadow-md rounded-lg">
+        <TextField name="username" type="text" label="Username" className="flex flex-col gap-2" isRequired>
         </TextField>
-        <TextField name="password" type="password" className="flex flex-col gap-2" isRequired>
-          <Label>Password</Label>
-          <Input />
-          <FieldError />
+        <TextField name="password" type="password" label="Password" className="flex flex-col gap-2" isRequired>
         </TextField>
-        <Button type="submit">Login</Button>
+        <Button type="submit">Enter</Button>
       </Form>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div >
+    </main >
   );
 }
