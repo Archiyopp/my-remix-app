@@ -31,12 +31,11 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 
 	// const  = await logIn(username, password)
-	return json({ ok: true, username, password, errors: null }, 200);
+	return json({ ok: true, errors: null }, 200);
 }
 
 export default function Index() {
 	const actionResult = useActionData<typeof action>();
-	console.log(actionResult);
 
 	return (
 		<main className="bg-zinc-50 h-full flex flex-col gap-8">
@@ -46,6 +45,7 @@ export default function Index() {
 			</h1>
 			<Form
 				method="post"
+				validationErrors={actionResult?.errors ?? {}}
 				action="/?index"
 				className="flex flex-col gap-6 p-10 mx-auto min-w-72 md:min-w-[28rem] bg-white shadow-md rounded-lg"
 			>
@@ -56,7 +56,6 @@ export default function Index() {
 					className="flex flex-col gap-2"
 					isRequired
 					autoComplete="username"
-					errorMessage={actionResult?.errors?.username}
 				/>
 				<TextField
 					name="password"
@@ -65,7 +64,6 @@ export default function Index() {
 					className="flex flex-col gap-2"
 					isRequired
 					autoComplete="current-password"
-					errorMessage={actionResult?.errors?.password}
 				/>
 				<Button type="submit">Enter</Button>
 			</Form>
