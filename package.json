@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev --manual -c \"npm run start\"",
+    "dev": "remix dev --manual -c \"pnpm run start\"",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public",
     "typecheck": "tsc",
@@ -26,6 +26,7 @@
     "tailwind-variants": "^0.1.20"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.5.2",
     "@cloudflare/workers-types": "^4.20230518.0",
     "@remix-run/dev": "^2.5.0",
     "@types/react": "^18.2.20",
@@ -40,7 +41,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.1.0",
-    "wrangler": "3.8.0"
+    "wrangler": "3.23.0"
   },
   "engines": {
     "node": "^20.11.0"
