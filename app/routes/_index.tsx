@@ -7,6 +7,7 @@ import { useActionData } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Form } from "~/components/Form";
 import { TextField } from "~/components/TextField";
+import { minLength, object, safeParse, string } from "valibot";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -31,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 
 	// const  = await logIn(username, password)
-	return json({ ok: true, errors: null }, 200);
+	return json({ ok: true, errors }, 200);
 }
 
 export default function Index() {
@@ -56,6 +57,7 @@ export default function Index() {
 					className="flex flex-col gap-2"
 					isRequired
 					autoComplete="username"
+					minLength={3}
 				/>
 				<TextField
 					name="password"
@@ -63,6 +65,7 @@ export default function Index() {
 					label="Password"
 					className="flex flex-col gap-2"
 					isRequired
+					minLength={6}
 					autoComplete="current-password"
 				/>
 				<Button type="submit">Enter</Button>
@@ -71,28 +74,22 @@ export default function Index() {
 	);
 }
 
+const LoginSchema = object({
+	username: string("Username is required.", [
+		minLength(1, "Please enter a username."),
+		minLength(3, "Username must be at least 3 characters."),
+	]),
+	password: string("Password is required.", [
+		minLength(1, "Please enter a password."),
+		minLength(6, "Password must be at least 6 characters."),
+	]),
+});
+
 function validate(username: string, password: string) {
-	const errors: { username?: string; password?: string } = {};
+	const result = safeParse(LoginSchema, { username, password });
+	if (result.success) return null;
 
-	if (!username) {
-		errors.username = "Username is required.";
-	}
-
-	if (username.length < 3) {
-		errors.username = "Username must be at least 3 characters.";
-	}
-
-	if (!password || typeof password !== "string") {
-		errors.password = "Password is required.";
-	}
-
-	if (password.length < 6) {
-		errors.password = "Password must be at least 6 characters.";
-	}
-
-	// if (!errors.username && (await accountExists(username))) {
-	//   errors.username = "An account with this username already exists.";
-	// }
-
-	return Object.keys(errors).length ? errors : null;
+	return Object.fromEntries(
+		result.issues.map((issue) => [issue.path?.at(0)?.key, issue.message]),
+	);
 }
