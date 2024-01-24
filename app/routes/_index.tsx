@@ -7,7 +7,7 @@ import { useActionData } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Form } from "~/components/Form";
 import { TextField } from "~/components/TextField";
-import { minLength, object, safeParse, string } from "valibot";
+import { validateUser } from "~/routes/validations";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -25,7 +25,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	const username = formData.get("username") ?? "";
 	const password = formData.get("password") ?? "";
 
-	const errors = await validate(String(username), String(password));
+	const errors = validateUser(String(username), String(password));
 
 	if (errors) {
 		return json({ ok: false, errors }, 400);
@@ -39,8 +39,7 @@ export default function Index() {
 	const actionResult = useActionData<typeof action>();
 
 	return (
-		<main className="bg-zinc-50 h-full flex flex-col gap-8">
-			<header className="w-full h-16 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 shadow" />
+		<div className="h-full flex flex-col gap-8">
 			<h1 className="text-2xl font-semibold text-center dark:text-white pt-8">
 				Log in
 			</h1>
@@ -58,6 +57,7 @@ export default function Index() {
 					isRequired
 					autoComplete="username"
 					minLength={3}
+					maxLength={256}
 				/>
 				<TextField
 					name="password"
@@ -66,30 +66,11 @@ export default function Index() {
 					className="flex flex-col gap-2"
 					isRequired
 					minLength={6}
+					maxLength={256}
 					autoComplete="current-password"
 				/>
 				<Button type="submit">Enter</Button>
 			</Form>
-		</main>
-	);
-}
-
-const LoginSchema = object({
-	username: string("Username is required.", [
-		minLength(1, "Please enter a username."),
-		minLength(3, "Username must be at least 3 characters."),
-	]),
-	password: string("Password is required.", [
-		minLength(1, "Please enter a password."),
-		minLength(6, "Password must be at least 6 characters."),
-	]),
-});
-
-function validate(username: string, password: string) {
-	const result = safeParse(LoginSchema, { username, password });
-	if (result.success) return null;
-
-	return Object.fromEntries(
-		result.issues.map((issue) => [issue.path?.at(0)?.key, issue.message]),
+		</div>
 	);
 }
